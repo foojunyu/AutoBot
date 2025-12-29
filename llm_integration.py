@@ -75,7 +75,11 @@ class GroqProvider(LLMProvider):
                 temperature=0.7,
             )
             
-            return response.choices[0].message.content
+            # Validate response has choices
+            if response.choices and len(response.choices) > 0:
+                return response.choices[0].message.content
+            
+            return None
             
         except Exception as e:
             print(f"Groq API error: {e}")
@@ -117,9 +121,13 @@ class HuggingFaceProvider(LLMProvider):
             response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
             
             if response.status_code == 200:
-                result = response.json()
-                if isinstance(result, list) and len(result) > 0:
-                    return result[0].get("generated_text", "").strip()
+                try:
+                    result = response.json()
+                    if isinstance(result, list) and len(result) > 0:
+                        return result[0].get("generated_text", "").strip()
+                except ValueError:
+                    # JSON decode error
+                    print("HuggingFace API: Invalid JSON response")
             
             return None
             

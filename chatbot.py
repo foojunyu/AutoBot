@@ -322,12 +322,26 @@ class PenangChatBot:
 
 def main():
     """Main function to run the chat bot in CLI mode"""
+    import sys
+    
+    # Parse command line arguments
+    use_llm = True
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "--no-llm":
+            use_llm = False
+            print("Running in fallback mode (LLM disabled)")
+        elif sys.argv[1] == "--help":
+            print("Usage: python chatbot.py [--no-llm] [--help]")
+            print("  --no-llm    Disable LLM and use only built-in knowledge base")
+            print("  --help      Show this help message")
+            return
+    
     print("=" * 60)
     print("🌴 Penang Bulletins Chat Bot 🌴")
     print("=" * 60)
     print()
     
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=use_llm)
     
     # Initial greeting
     print("Bot:", bot.generate_response("Hello"))
