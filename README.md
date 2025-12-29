@@ -2,6 +2,8 @@
 
 A knowledgeable chat bot that can answer questions about Penang bulletins, tourist information, food, culture, and more!
 
+**NEW:** Now enhanced with free LLM API integration for dynamic and latest responses! 🤖
+
 ## Features
 
 - 🏛️ General information about Penang
@@ -11,6 +13,7 @@ A knowledgeable chat bot that can answer questions about Penang bulletins, touri
 - 📰 Current bulletins and updates
 - 🚌 Transportation and practical information
 - ☀️ Weather and travel tips
+- 🤖 **AI-powered responses** using free LLM APIs (Groq or HuggingFace)
 
 ## Quick Start
 
@@ -31,12 +34,32 @@ cd AutoBot
 pip install -r requirements.txt
 ```
 
+3. **(Optional but Recommended)** Set up LLM API for enhanced responses:
+   
+   Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Get a free API key from one of these providers:
+   - **Groq** (Recommended): https://console.groq.com/keys
+   - **HuggingFace**: https://huggingface.co/settings/tokens
+   
+   Edit `.env` and add your API key:
+   ```
+   GROQ_API_KEY=your_api_key_here
+   ```
+
 ### Running the Chat Bot
 
 Run the chat bot in CLI mode:
 ```bash
 python chatbot.py
 ```
+
+**Note:** The bot works in two modes:
+- **LLM Mode** (with API key): Uses AI to generate dynamic, context-aware responses
+- **Fallback Mode** (without API key): Uses built-in knowledge base with pre-defined responses
 
 ## Usage Examples
 
@@ -81,10 +104,35 @@ Bot: **Current Penang Bulletins & Updates:**
 AutoBot/
 ├── chatbot.py           # Main chat bot implementation
 ├── penang_knowledge.py  # Knowledge base about Penang
+├── llm_integration.py   # LLM API integration (Groq, HuggingFace)
 ├── requirements.txt     # Python dependencies
+├── .env.example         # Example environment variables
 ├── .gitignore          # Git ignore rules
 └── README.md           # This file
 ```
+
+## LLM Integration
+
+The bot now supports free LLM APIs for generating dynamic responses:
+
+### Supported Providers
+
+1. **Groq** (Recommended)
+   - Fast inference with Llama 3.1 model
+   - Free tier available
+   - Get API key: https://console.groq.com/keys
+
+2. **HuggingFace Inference API**
+   - Access to Mistral 7B model
+   - Free tier available
+   - Get API key: https://huggingface.co/settings/tokens
+
+### How It Works
+
+- When you ask a question, the bot uses LLM to generate contextual responses
+- The LLM is provided with Penang knowledge as context
+- Conversation history is maintained for coherent multi-turn conversations
+- Falls back to rule-based responses if LLM is unavailable
 
 ## Knowledge Base
 

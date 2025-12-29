@@ -10,7 +10,7 @@ from penang_knowledge import get_penang_info, search_penang_info
 
 def test_bot_initialization():
     """Test that bot initializes correctly"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     assert bot is not None
     assert bot.conversation_history == []
     print("✓ Bot initialization test passed")
@@ -18,7 +18,7 @@ def test_bot_initialization():
 
 def test_greeting():
     """Test greeting responses"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     response = bot.generate_response("Hello")
     assert "Welcome" in response
     assert "Penang" in response
@@ -27,7 +27,7 @@ def test_greeting():
 
 def test_tourist_attractions():
     """Test tourist attractions queries"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     response = bot.generate_response("What are the tourist attractions?")
     assert "George Town" in response or "tourist" in response.lower()
     print("✓ Tourist attractions test passed")
@@ -35,7 +35,7 @@ def test_tourist_attractions():
 
 def test_food_info():
     """Test food information queries"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     response = bot.generate_response("Tell me about food")
     assert "food" in response.lower() or "dish" in response.lower()
     print("✓ Food information test passed")
@@ -43,7 +43,7 @@ def test_food_info():
 
 def test_bulletins():
     """Test bulletins queries"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     response = bot.generate_response("What are the current bulletins?")
     assert "bulletin" in response.lower() or "update" in response.lower()
     print("✓ Bulletins test passed")
@@ -51,7 +51,7 @@ def test_bulletins():
 
 def test_general_info():
     """Test general information queries"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     response = bot.generate_response("What is Penang?")
     assert "Penang" in response
     assert "Malaysia" in response or "Pearl of the Orient" in response
@@ -60,7 +60,7 @@ def test_general_info():
 
 def test_conversation_history():
     """Test conversation history tracking"""
-    bot = PenangChatBot()
+    bot = PenangChatBot(use_llm=False)  # Disable LLM for testing
     bot.generate_response("Hello")
     bot.generate_response("What is Penang?")
     

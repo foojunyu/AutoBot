@@ -3,24 +3,46 @@ Penang Bulletins Chat Bot
 
 A knowledgeable chat bot that can answer questions about Penang bulletins,
 tourist information, food, culture, and more.
+
+Now enhanced with LLM integration for dynamic and latest responses!
 """
 
+import os
 from typing import List, Dict, Optional
 from penang_knowledge import PENANG_KNOWLEDGE, get_penang_info, search_penang_info
+from llm_integration import LLMManager, format_penang_context
 
 
 class PenangChatBot:
     """
     Chat bot specialized in Penang bulletins and information
+    Enhanced with LLM for dynamic responses
     """
     
-    def __init__(self):
+    def __init__(self, use_llm: bool = True):
+        """
+        Initialize the chat bot
+        
+        Args:
+            use_llm: Whether to use LLM for enhanced responses (default: True)
+        """
         self.conversation_history = []
         self.knowledge_base = PENANG_KNOWLEDGE
+        self.use_llm = use_llm
+        self.llm_manager = LLMManager() if use_llm else None
+        
+        # Check if LLM is available
+        if use_llm and self.llm_manager and self.llm_manager.is_available():
+            print("🤖 LLM mode enabled - Using AI for enhanced responses!")
+        elif use_llm:
+            print("⚠️  No LLM API key found. Using fallback mode with knowledge base.")
+            print("   To enable LLM: Set GROQ_API_KEY or HUGGINGFACE_API_KEY environment variable.")
+            self.use_llm = False
         
     def generate_response(self, user_message: str) -> str:
         """
         Generate a response to the user's message based on Penang knowledge
+        Uses LLM for enhanced responses when available
         
         Args:
             user_message: User's input message
@@ -33,6 +55,15 @@ class PenangChatBot:
         # Add to conversation history
         self.conversation_history.append({"role": "user", "content": user_message})
         
+        # Try LLM first if enabled and available
+        if self.use_llm and self.llm_manager and self.llm_manager.is_available():
+            response = self._generate_llm_response(user_message)
+            if response:
+                # Add response to conversation history
+                self.conversation_history.append({"role": "assistant", "content": response})
+                return response
+        
+        # Fallback to rule-based responses
         # Handle greetings
         if any(greeting in user_message_lower for greeting in ["hello", "hi", "hey", "greetings"]):
             response = self._handle_greeting()
@@ -77,6 +108,32 @@ class PenangChatBot:
         self.conversation_history.append({"role": "assistant", "content": response})
         
         return response
+    
+    def _generate_llm_response(self, user_message: str) -> Optional[str]:
+        """
+        Generate response using LLM with Penang context
+        
+        Args:
+            user_message: User's input message
+        
+        Returns:
+            LLM-generated response or None if failed
+        """
+        try:
+            # Format context from knowledge base
+            context = format_penang_context(self.knowledge_base)
+            
+            # Get recent conversation history (last 4 messages to keep context manageable)
+            recent_messages = self.conversation_history[-4:] if len(self.conversation_history) > 4 else self.conversation_history
+            
+            # Generate response using LLM
+            response = self.llm_manager.generate_response(recent_messages, context)
+            
+            return response
+            
+        except Exception as e:
+            print(f"LLM generation error: {e}")
+            return None
     
     def _handle_greeting(self) -> str:
         """Handle greeting messages"""
