@@ -5,8 +5,6 @@ A knowledgeable chat bot that can answer questions about Penang bulletins,
 tourist information, food, culture, and more.
 """
 
-import os
-import json
 from typing import List, Dict, Optional
 from penang_knowledge import PENANG_KNOWLEDGE, get_penang_info, search_penang_info
 
